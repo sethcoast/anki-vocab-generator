@@ -10,7 +10,7 @@ from constants import (
 
 
 # Function to call the LLM for translations and example sentences
-def generate_language_data(vocab_word, target_language):
+def generate_language_data(vocab_word, target_language="Japanese"):
     """
     Given a {target_language} vocabulary word, generate:
     - English translation of the word
@@ -55,14 +55,14 @@ def generate_audio(text, language="ja", filename="output.mp3"):
         return f"Error generating audio: {e}"
 
 # Complete workflow
-def process_vocab_word(vocab_word):
+def process_vocab_word(vocab_word, target_language="Japanese"):
     """
-    Generates all components for an Anki card from a Japanese word.
+    Generates all components for an English-{target_language} Anki card from a {target_language} word.
     """
     print(f"Processing vocabulary word: {vocab_word}\n")
     
     # Generate text data
-    language_data = generate_language_data(vocab_word)
+    language_data = generate_language_data(vocab_word, target_language=target_language)
     if len(language_data) < 3:
         print("Error: LLM output malformed.")
         return None
@@ -70,16 +70,18 @@ def process_vocab_word(vocab_word):
     vocab_translation, example_sentence, example_sentence_translation = language_data[:3]
     
     # Generate TTS audio
-    vocab_audio = generate_audio(vocab_word, filename="vocab_word.mp3")
-    example_sentence_audio = generate_audio(example_sentence, filename="example_sentence.mp3")
+    vocab_filename = f"{vocab_word}_word.mp3"
+    sentence_filename = f"{vocab_word}_sentence.mp3"
+    generate_audio(vocab_word, filename=vocab_filename)
+    generate_audio(example_sentence, filename=sentence_filename)
     
     return {
         "vocab_word": vocab_word,
         "vocab_translation": vocab_translation,
         "example_sentence": example_sentence,
         "example_sentence_translation": example_sentence_translation,
-        "vocab_audio": vocab_audio,
-        "example_sentence_translation_audio": example_sentence_audio
+        "vocab_audio_filename": vocab_filename,
+        "example_sentence_translation_audio_filename": sentence_filename
     }
 
 # Function to send the card to Anki
