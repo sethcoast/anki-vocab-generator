@@ -1,5 +1,6 @@
 # pipeline.py
 import openai
+import os
 import requests
 from gtts import gTTS
 
@@ -19,11 +20,16 @@ def generate_language_data(vocab_word, target_language="Japanese"):
     """
     prompt = f"""
     Please provide the following details for the {target_language} vocabulary word "{vocab_word}":
-    1. English translation of the word
-    2. An example sentence in {target_language} using the word
-    3. English translation of the example sentence
+    1. English translation of the word, by itself no other text
+    2. An example sentence in {target_language} using the word, by itself no other text
+    3. English translation of the example sentence, by itself no other text
     
     Provide them exactly as specified, separated by newline characters.
+    
+    EXAMPLE: If the target language is Japanese and vocab word = 猫 you would output:
+    Cat
+    猫は魚が大好きです
+    Cats love fish
     """
     try:
         client = openai.OpenAI(api_key=OPENAI_API_KEY) 
@@ -70,39 +76,43 @@ def process_vocab_word(vocab_word, target_language="Japanese"):
     vocab_translation, example_sentence, example_sentence_translation = language_data[:3]
     
     # Generate TTS audio
-    vocab_filename = f"{vocab_word}_word.mp3"
-    sentence_filename = f"{vocab_word}_sentence.mp3"
-    generate_audio(vocab_word, filename=vocab_filename)
-    generate_audio(example_sentence, filename=sentence_filename)
+    vocab_audio_filename = f"{vocab_word}_word.mp3"
+    example_sentence_translation_audio_filename = f"{vocab_word}_sentence.mp3"
+    generate_audio(vocab_word, filename=vocab_audio_filename)
+    generate_audio(example_sentence, filename=example_sentence_translation_audio_filename)
+    
+    print("Checking if audio files exist...")
+    print(f"{vocab_audio_filename}: {os.path.exists(vocab_audio_filename)}")
+    print(f"{example_sentence_translation_audio_filename}: {os.path.exists(example_sentence_translation_audio_filename)}")
     
     return {
         "vocab_word": vocab_word,
         "vocab_translation": vocab_translation,
         "example_sentence": example_sentence,
         "example_sentence_translation": example_sentence_translation,
-        "vocab_audio_filename": vocab_filename,
-        "example_sentence_translation_audio_filename": sentence_filename
+        "vocab_audio_filename": vocab_audio_filename,
+        "example_sentence_translation_audio_filename": example_sentence_translation_audio_filename
     }
 
-# Function to send the card to Anki
-def add_card_to_anki(deck_name, vocab_data):
-    """
-    Sends the formatted Anki card to Anki using AnkiConnect API.
-    """
-    note = {
-        "deckName": deck_name,
-        "modelName": "Basic", 
-        "fields": {
-            "Front": f"{vocab_data['vocab_word']}\n\n{vocab_data['example_sentence']}",
-            "Back": f"{vocab_data['vocab_translation']}\n\n{vocab_data['example_sentence_translation']}",
-        },
-        "audio": [
-            {"url": vocab_data["vocab_audio"], "filename": "vocab_word.mp3", "fields": ["Front"]},
-            {"url": vocab_data["example_sentence_translation_audio"], "filename": "example_sentence.mp3", "fields": ["Back"]}
-        ]
-    }
+# # Function to send the card to Anki
+# def add_card_to_anki(deck_name, vocab_data):
+#     """
+#     Sends the formatted Anki card to Anki using AnkiConnect API.
+#     """
+#     note = {
+#         "deckName": deck_name,
+#         "modelName": "Basic", 
+#         "fields": {
+#             "Front": f"{vocab_data['vocab_word']}\n\n{vocab_data['example_sentence']}",
+#             "Back": f"{vocab_data['vocab_translation']}\n\n{vocab_data['example_sentence_translation']}",
+#         },
+#         "audio": [
+#             {"url": vocab_data["vocab_audio"], "filename": "vocab_word.mp3", "fields": ["Front"]},
+#             {"url": vocab_data["example_sentence_translation_audio"], "filename": "example_sentence.mp3", "fields": ["Back"]}
+#         ]
+#     }
     
-    payload = {"action": "addNote", "version": 6, "params": {"note": note}}
+#     payload = {"action": "addNote", "version": 6, "params": {"note": note}}
     
-    response = requests.post(ANKI_CONNECT_URL, json=payload).json()
-    return response
+#     response = requests.post(ANKI_CONNECT_URL, json=payload).json()
+#     return response
