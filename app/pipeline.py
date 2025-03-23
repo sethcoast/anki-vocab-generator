@@ -11,22 +11,22 @@ from constants import (
 
 
 # Function to call the LLM for translations and example sentences
-def generate_language_data(vocab_word, target_language="Japanese"):
+def generate_language_data(vocab_word, target_language="Japanese", base_language="English"):
     """
     Given a {target_language} vocabulary word, generate:
-    - English translation of the word
+    - {base_language} translation of the word
     - Example sentence in {target_language}
-    - English translation of the example sentence
+    - {base_language} translation of the example sentence
     """
     prompt = f"""
     Please provide the following details for the {target_language} vocabulary word "{vocab_word}":
-    1. English translation of the word, by itself no other text
+    1. {base_language} translation of the word, by itself no other text
     2. An example sentence in {target_language} using the word, by itself no other text
-    3. English translation of the example sentence, by itself no other text
+    3. {base_language} translation of the example sentence, by itself no other text
     
     Provide them exactly as specified, separated by newline characters.
     
-    EXAMPLE: If the target language is Japanese and vocab word = 猫 you would output:
+    EXAMPLE: If the target language is Japanese, base language is English, and vocab word = 猫 you would output:
     Cat
     猫は魚が大好きです
     Cats love fish
@@ -42,8 +42,6 @@ def generate_language_data(vocab_word, target_language="Japanese"):
             max_tokens=300,
             temperature=0.7
         )
-        
-        
         
         output = response.choices[0].message.content.strip()
         return output.split("\n")
@@ -63,14 +61,14 @@ def generate_audio(text, language="ja", filename="output.mp3"):
         return f"Error generating audio: {e}"
 
 # Complete workflow
-def process_vocab_word(vocab_word, target_language="Japanese"):
+def process_vocab_word(vocab_word, target_language="Japanese", base_language="English"):
     """
-    Generates all components for an English-{target_language} Anki card from a {target_language} word.
+    Generates all components for an {base_language}-{target_language} Anki card from a {target_language} word.
     """
     print(f"Processing vocabulary word: {vocab_word}\n")
     
     # Generate text data
-    language_data = generate_language_data(vocab_word, target_language=target_language)
+    language_data = generate_language_data(vocab_word, target_language=target_language, base_language=base_language)
     if len(language_data) < 3:
         print("Error: LLM output malformed.")
         return None
@@ -80,6 +78,7 @@ def process_vocab_word(vocab_word, target_language="Japanese"):
     # Generate TTS audio
     vocab_audio_filename = f"{vocab_word}_word.mp3"
     example_sentence_translation_audio_filename = f"{vocab_word}_sentence.mp3"
+    # TODO: generate "IETF language tag" from target_language string, and pass in here
     generate_audio(vocab_word, filename=vocab_audio_filename)
     generate_audio(example_sentence, filename=example_sentence_translation_audio_filename)
     
