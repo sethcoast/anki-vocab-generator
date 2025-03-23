@@ -43,6 +43,8 @@ def generate_language_data(vocab_word, target_language="Japanese"):
             temperature=0.7
         )
         
+        
+        
         output = response.choices[0].message.content.strip()
         return output.split("\n")
     except Exception as e:
@@ -94,25 +96,3 @@ def process_vocab_word(vocab_word, target_language="Japanese"):
         "example_sentence_translation_audio_filename": example_sentence_translation_audio_filename
     }
 
-# # Function to send the card to Anki
-# def add_card_to_anki(deck_name, vocab_data):
-#     """
-#     Sends the formatted Anki card to Anki using AnkiConnect API.
-#     """
-#     note = {
-#         "deckName": deck_name,
-#         "modelName": "Basic", 
-#         "fields": {
-#             "Front": f"{vocab_data['vocab_word']}\n\n{vocab_data['example_sentence']}",
-#             "Back": f"{vocab_data['vocab_translation']}\n\n{vocab_data['example_sentence_translation']}",
-#         },
-#         "audio": [
-#             {"url": vocab_data["vocab_audio"], "filename": "vocab_word.mp3", "fields": ["Front"]},
-#             {"url": vocab_data["example_sentence_translation_audio"], "filename": "example_sentence.mp3", "fields": ["Back"]}
-#         ]
-#     }
-    
-#     payload = {"action": "addNote", "version": 6, "params": {"note": note}}
-    
-#     response = requests.post(ANKI_CONNECT_URL, json=payload).json()
-#     return response
