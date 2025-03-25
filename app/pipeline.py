@@ -1,7 +1,7 @@
 # pipeline.py
 import openai
-import os
-import requests
+import io
+import base64
 from gtts import gTTS
 
 from constants import (
@@ -49,16 +49,55 @@ def generate_language_data(vocab_word, target_language="Japanese", base_language
         return ["Error", str(e), ""]
 
 # Function to generate TTS audio
-def generate_audio(text, language="ja", filename="output.mp3"):
+def generate_audio(text, language="ja"):
     """
-    Generate TTS audio for a given text in the specified language.
+    Generate TTS audio for a given text and return base64-encoded audio data
     """
     try:
+        # Generate audio in memory
+        audio_buffer = io.BytesIO()
         tts = gTTS(text=text, lang=language)
-        tts.save(filename)
-        return filename
+        tts.write_to_fp(audio_buffer)
+        
+        # Convert to base64
+        audio_data = base64.b64encode(audio_buffer.getvalue()).decode('utf-8')
+        return audio_data
     except Exception as e:
         return f"Error generating audio: {e}"
+
+def get_language_code(language_name):
+    """Map language names to IETF language tags"""
+    mapping = {
+        "Arabic": "ar",
+        "Bulgarian": "bg",
+        "Chinese": "zh",
+        "Croatian": "hr",
+        "Czech": "cs",
+        "Dutch": "nl",
+        "English": "en",
+        "French": "fr",
+        "German": "de",
+        "Greek": "el",
+        "Hebrew": "he",
+        "Hindi": "hi",
+        "Hungarian": "hu",
+        "Indonesian": "id",
+        "Italian": "it",
+        "Japanese": "ja",
+        "Korean": "ko",
+        "Malay": "ms",
+        "Polish": "pl",
+        "Portuguese": "pt",
+        "Romanian": "ro",
+        "Russian": "ru",
+        "Slovak": "sk",
+        "Spanish": "es",
+        "Swedish": "sv",
+        "Thai": "th",
+        "Turkish": "tr",
+        "Vietnamese": "vi"
+    }
+    return mapping.get(language_name, "en")
 
 # Complete workflow
 def process_vocab_word(vocab_word, target_language="Japanese", base_language="English"):
@@ -76,22 +115,16 @@ def process_vocab_word(vocab_word, target_language="Japanese", base_language="En
     vocab_translation, example_sentence, example_sentence_translation = language_data[:3]
     
     # Generate TTS audio
-    vocab_audio_filename = f"{vocab_word}_word.mp3"
-    example_sentence_translation_audio_filename = f"{vocab_word}_sentence.mp3"
-    # TODO: generate "IETF language tag" from target_language string, and pass in here
-    generate_audio(vocab_word, filename=vocab_audio_filename)
-    generate_audio(example_sentence, filename=example_sentence_translation_audio_filename)
-    
-    print("Checking if audio files exist...")
-    print(f"{vocab_audio_filename}: {os.path.exists(vocab_audio_filename)}")
-    print(f"{example_sentence_translation_audio_filename}: {os.path.exists(example_sentence_translation_audio_filename)}")
+    language_code = get_language_code(target_language)
+    vocab_audio = generate_audio(vocab_word, language_code)
+    example_sentence_translation_audio = generate_audio(example_sentence, language_code)
     
     return {
         "vocab_word": vocab_word,
         "vocab_translation": vocab_translation,
         "example_sentence": example_sentence,
         "example_sentence_translation": example_sentence_translation,
-        "vocab_audio_filename": vocab_audio_filename,
-        "example_sentence_translation_audio_filename": example_sentence_translation_audio_filename
+        "vocab_audio": vocab_audio,
+        "example_sentence_translation_audio": example_sentence_translation_audio
     }
 
