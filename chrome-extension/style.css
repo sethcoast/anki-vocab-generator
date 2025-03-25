@@ -1,17 +1,77 @@
 body {
-    font-family: sans-serif;
+    width: 400px;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input, select, button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #007AFF;
+}
+
+button {
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#result {
+    margin-top: 20px;
+    line-height: 1.5;
+}
+
+/* Audio button styling */
+button[id^="play-"] {
+    padding: 4px 8px;
+    margin-left: 8px;
+    background-color: transparent;
+    color: #007AFF;
+    border: 1px solid #007AFF;
+}
+
+button[id^="play-"]:hover {
+    background-color: #007AFF;
+    color: white;
+}
+
+/* Deck selector styling */
+#deck-select {
+    margin: 10px 0;
+    width: 100%;
+}
+
+#add-to-anki {
+    width: 100%;
+    margin-top: 10px;
     padding: 10px;
-    width: 250px;
-  }
-  
-  input {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 5px;
-  }
-  
-  button {
-    width: 100%;
-    padding: 5px;
-  }
+}
   

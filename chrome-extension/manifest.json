@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Vocab Anki Card Generator",
+    "name": "Anki Vocab Generator",
     "version": "1.0",
-    "description": "Generate Anki cards with AI from vocab words",
+    "description": "Generate Anki cards from vocabulary words",
     "action": {
       "default_popup": "popup.html",
       "default_icon": {
@@ -17,7 +17,7 @@
       "http://localhost:8765/"
     ],
     "content_security_policy": {
-      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+      "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
     }
 }
   

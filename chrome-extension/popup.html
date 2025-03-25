@@ -6,11 +6,17 @@
 </head>
 <body>
   <h1>New Vocab Card</h1>
-  <input id="vocab-word" placeholder="Enter vocab word" />
-  <input id="target-lang" placeholder="Target language (e.g. ja)" />
-  <button id="generate-btn">Generate</button>
+  <div class="input-group">
+    <input id="vocab-word" placeholder="Enter vocab word" />
+    <div id="lang-container" style="margin: 10px 0;">
+      <select id="detected-lang">
+        <option value="">Select language...</option>
+      </select>
+    </div>
+    <button id="generate-btn">Generate</button>
+  </div>
   
-  <div id="result" style="margin-top: 10px;"></div>
+  <div id="result" style="margin-top: 20px;"></div>
   
   <script type="module" src="popup.js"></script>
 </body>

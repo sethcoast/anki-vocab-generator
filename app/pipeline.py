@@ -114,8 +114,10 @@ def process_vocab_word(vocab_word, target_language="Japanese", base_language="En
     
     vocab_translation, example_sentence, example_sentence_translation = language_data[:3]
     
-    # Generate TTS audio
+    # Get language code from the mapping
     language_code = get_language_code(target_language)
+    
+    # Generate TTS audio
     vocab_audio = generate_audio(vocab_word, language_code)
     example_sentence_translation_audio = generate_audio(example_sentence, language_code)
     
@@ -125,6 +127,8 @@ def process_vocab_word(vocab_word, target_language="Japanese", base_language="En
         "example_sentence": example_sentence,
         "example_sentence_translation": example_sentence_translation,
         "vocab_audio": vocab_audio,
-        "example_sentence_translation_audio": example_sentence_translation_audio
+        "example_sentence_translation_audio": example_sentence_translation_audio,
+        "target_language": target_language,
+        "target_language_code": language_code
     }
 
