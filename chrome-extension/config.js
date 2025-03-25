@@ -16,6 +16,7 @@ export const SUPPORTED_LANGUAGES = {
     "Portuguese": "pt",
     "Russian": "ru",
     "Spanish": "es",
+    "Swedish": "sv",
     "Thai": "th",
     "Turkish": "tr",
     "Vietnamese": "vi"

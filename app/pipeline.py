@@ -11,7 +11,7 @@ from constants import (
 
 
 # Function to call the LLM for translations and example sentences
-def generate_language_data(vocab_word, target_language="Japanese", base_language="English"):
+def generate_language_data(vocab_word, target_language, base_language):
     """
     Given a {target_language} vocabulary word, generate:
     - {base_language} translation of the word
@@ -36,7 +36,7 @@ def generate_language_data(vocab_word, target_language="Japanese", base_language
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant for learning Japanese."},
+                {"role": "system", "content": "You are a helpful assistant for learning languages."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=300,
@@ -100,12 +100,13 @@ def get_language_code(language_name):
     return mapping.get(language_name, "en")
 
 # Complete workflow
-def process_vocab_word(vocab_word, target_language="Japanese", base_language="English"):
+def process_vocab_word(vocab_word, target_language, base_language="English"):
     """
     Generates all components for an {base_language}-{target_language} Anki card from a {target_language} word.
     """
-    print(f"Processing vocabulary word: {vocab_word}\n")
-    
+    print(f"Processing vocabulary word: {vocab_word}")
+    print(f"Target language: {target_language}")
+    print(f"Base language: {base_language}")
     # Generate text data
     language_data = generate_language_data(vocab_word, target_language=target_language, base_language=base_language)
     if len(language_data) < 3:
@@ -114,10 +115,8 @@ def process_vocab_word(vocab_word, target_language="Japanese", base_language="En
     
     vocab_translation, example_sentence, example_sentence_translation = language_data[:3]
     
-    # Get language code from the mapping
-    language_code = get_language_code(target_language)
-    
     # Generate TTS audio
+    language_code = get_language_code(target_language)
     vocab_audio = generate_audio(vocab_word, language_code)
     example_sentence_translation_audio = generate_audio(example_sentence, language_code)
     
@@ -127,8 +126,6 @@ def process_vocab_word(vocab_word, target_language="Japanese", base_language="En
         "example_sentence": example_sentence,
         "example_sentence_translation": example_sentence_translation,
         "vocab_audio": vocab_audio,
-        "example_sentence_translation_audio": example_sentence_translation_audio,
-        "target_language": target_language,
-        "target_language_code": language_code
+        "example_sentence_translation_audio": example_sentence_translation_audio
     }
 
