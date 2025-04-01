@@ -1,0 +1,15 @@
+{
+  "name": "anki-vocab-generator-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for generating Anki vocabulary cards",
+  "private": true,
+  "scripts": {
+    "build": "echo \"No build step configured\"",
+    "test": "echo \"No test specified\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/chrome": "^0.0.260",
+    "web-ext": "^7.11.0"
+  }
+} 

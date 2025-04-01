@@ -4,7 +4,7 @@ import io
 import base64
 from gtts import gTTS
 
-from constants import (
+from backend.constants import (
     OPENAI_API_KEY,
     ANKI_CONNECT_URL    
 )
