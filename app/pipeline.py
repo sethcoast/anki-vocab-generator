@@ -30,6 +30,16 @@ def generate_language_data(vocab_word, target_language, base_language):
     Cat
     猫は魚が大好きです
     Cats love fish
+    
+    EXAMPLE: If the target language is Spanish, base language is English, and vocab word = perro
+    perro
+    El perro es un animal de cuatro patas
+    The dog is a four-legged animal
+    
+    EXAMPLE: If the target language is Swedish, base language is English, and vocab word = vatten
+    vatten
+    Vatten är en vätska
+    Water is a liquid
     """
     try:
         client = openai.OpenAI(api_key=OPENAI_API_KEY) 

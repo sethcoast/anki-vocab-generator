@@ -1,26 +1,11 @@
 import { addNote, getDecks } from './anki_utils.js';
-import { SUPPORTED_LANGUAGES, LANGUAGE_CONFIDENCE_THRESHOLD } from './config.js';
+import { SUPPORTED_LANGUAGES } from './config.js';
 
 // Initialize elements
 const vocabInput = document.getElementById("vocab-word");
 const generateBtn = document.getElementById("generate-btn");
 const langSelect = document.getElementById("detected-lang");
 const resultDiv = document.getElementById("result");
-
-// Load franc dynamically
-let francLoaded = false;
-let franc;
-
-async function loadFranc() {
-    try {
-        const module = await import('./franc.min.js');
-        franc = module.default;
-        francLoaded = true;
-        console.log("Franc loaded successfully");
-    } catch (error) {
-        console.error("Error loading franc:", error);
-    }
-}
 
 // Initialize language dropdown
 function initializeLanguageDropdown() {
@@ -32,33 +17,7 @@ function initializeLanguageDropdown() {
     `;
 }
 
-// Try to detect language and select it in the dropdown
-function detectAndSelectLanguage(text) {
-    if (!francLoaded || !text || text.length < 2) return;
-
-    try {
-        const detectedLangs = franc.all(text);
-        if (!detectedLangs || detectedLangs.length === 0) return;
-
-        const [detectedCode, confidence] = detectedLangs[0];
-        
-        if (detectedCode && confidence >= LANGUAGE_CONFIDENCE_THRESHOLD) {
-            // Find matching language in our supported list
-            const langEntry = Object.entries(SUPPORTED_LANGUAGES)
-                .find(([_, code]) => code === detectedCode);
-            
-            if (langEntry) {
-                langSelect.value = langEntry[1];
-                console.log("Auto-selected language:", langEntry[0]);
-            }
-        }
-    } catch (error) {
-        console.error("Error in language detection:", error);
-    }
-}
-
 // Initialize
-loadFranc();
 initializeLanguageDropdown();
 
 // Handle generate button click
@@ -72,13 +31,8 @@ generateBtn.addEventListener("click", async () => {
     }
 
     if (!selectedLang) {
-        // Try to detect language first
-        detectAndSelectLanguage(word);
-        
-        if (!langSelect.value) {
-            resultDiv.textContent = "Please select a language";
-            return;
-        }
+        resultDiv.textContent = "Please select a language";
+        return;
     }
     
     const payload = {
