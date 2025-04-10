@@ -1,4 +1,4 @@
-# app/main.py
+# backend/main.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from backend.pipeline import process_vocab_word

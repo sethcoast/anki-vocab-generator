@@ -20,6 +20,17 @@ function initializeLanguageDropdown() {
 // Initialize
 initializeLanguageDropdown();
 
+// Initialize configuration
+chrome.storage.local.get(['apiKey', 'apiGatewayUrl'], (result) => {
+    if (!result.apiKey || !result.apiGatewayUrl) {
+        // If not set, initialize with default values
+        chrome.storage.local.set({
+            apiKey: CONFIG.API_KEY,
+            apiGatewayUrl: CONFIG.API_GATEWAY_URL
+        });
+    }
+});
+
 // Handle generate button click
 generateBtn.addEventListener("click", async () => {
     const word = vocabInput.value.trim();
@@ -44,10 +55,16 @@ generateBtn.addEventListener("click", async () => {
     resultDiv.textContent = "Loading...";
 
     try {
-        const response = await fetch("http://localhost:8000/generate-card", {
+        // Get API key and gateway URL from storage
+        const { apiKey, apiGatewayUrl } = await new Promise((resolve) => {
+            chrome.storage.local.get(['apiKey', 'apiGatewayUrl'], resolve);
+        });
+        
+        const response = await fetch(`${apiGatewayUrl}/generate-card`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "x-api-key": apiKey
             },
             body: JSON.stringify(payload)
         });

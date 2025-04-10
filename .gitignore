@@ -2,3 +2,5 @@
 .env
 notebook/*.mp3
 *__pycache__
+frontend/config.js
+frontend/env.js

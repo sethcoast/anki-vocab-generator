@@ -17,7 +17,6 @@ gcloud run deploy $SERVICE_NAME \
   --image $IMAGE_NAME \
   --platform managed \
   --region $REGION \
-  --allow-unauthenticated \
   --update-secrets OPENAI_API_KEY=$SECRET_NAME:latest
 
 echo "✅ Deployment complete!"

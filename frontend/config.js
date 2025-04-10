@@ -22,4 +22,11 @@ export const SUPPORTED_LANGUAGES = {
     "Vietnamese": "vi"
 };
 
-export const LANGUAGE_CONFIDENCE_THRESHOLD = 0.7; 
+export const LANGUAGE_CONFIDENCE_THRESHOLD = 0.7;
+
+// This file should not be committed to the repository
+// Add it to .gitignore
+const CONFIG = {
+    API_KEY: "AIzaSyDAQr_q7RgZD5hFpyYvZcld8R7lUyiMCQc",
+    API_GATEWAY_URL: "https://anki-vocab-gateway-3xwqxs1d.uc.gateway.dev"
+}; 
