@@ -9,6 +9,43 @@ from backend.constants import (
     ANKI_CONNECT_URL    
 )
 
+# Function to call the LLM for translation of a target word and sentence
+def generate_translation(cloze_phrase, vocab_sentence, target_language, base_language):
+    """
+    Given a {target_language} vocabulary word and sentence, generate:
+    - {base_language} translation of the word
+    - {base_language} translation of the sentence
+    """
+    prompt = f"""
+    Please provide the following details for the {target_language} vocabulary word "{cloze_phrase}" and sentence "{vocab_sentence}":
+    1. {base_language} translation of the word, by itself no other text
+    2. {base_language} translation of the sentence, by itself no other text
+    
+    Provide them exactly as specified, separated by newline characters.
+    
+    EXAMPLE: If the target language is Japanese, base language is English, and vocab word = 猫, vocab sentence = 猫は魚が大好きです you would output:
+    cat
+    Cats love fish
+    EXAMPLE: If the target language is Japanese, base language is English, and vocab word = 猫, vocab sentence = 見に行きました, 友だちと映画を見に行きました。You would output:
+    went to see
+    Yesterday, I went to see a movie with a friend.
+    """
+    try:
+        client = openai.OpenAI(api_key=OPENAI_API_KEY) 
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant for learning languages."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=300,
+            temperature=0.7
+        )
+        
+        output = response.choices[0].message.content.strip()
+        return output.split("\n")
+    except Exception as e:
+        return ["Error", str(e), ""]
 
 # Function to call the LLM for translations and example sentences
 def generate_language_data(vocab_word, target_language, base_language):
